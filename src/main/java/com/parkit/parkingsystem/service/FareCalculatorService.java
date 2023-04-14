@@ -4,6 +4,8 @@ import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
+	
+	private String freeParkingLimitTime = 1800000;
 
     public void calculateFare(Ticket ticket){
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){
@@ -18,11 +20,19 @@ public class FareCalculatorService {
 
         switch (ticket.getParkingSpot().getParkingType()){
             case CAR: {
-                ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+            	if (duration < freeParkingLimitTime) {
+            		ticket.setPrice(0);
+            	}else {
+            		ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+            	}
                 break;
             }
             case BIKE: {
-                ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+            	if (duration < freeParkingLimitTime) {
+            		ticket.setPrice(0);
+            	}else {
+            		ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+            	}
                 break;
             }
             default: throw new IllegalArgumentException("Unkown Parking Type");
